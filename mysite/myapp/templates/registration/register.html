@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Register{% endblock %}
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static "css/log-in-form.css" %}"></link>
+    </head>
+</html>
+
+{% block content %}
+<div class="grid-x grid-padding-x">
+    <div class="large-4 medium-6 small-12 large-offset-4 medium-offset-3 cell">
+        <form class="log-in-form", action"/register/" method="POST">
+            {% csrf_token %}
+            {{ form.errors }}
+            <h4 class="text-center">Register</h4>
+            {{ form.username.label_tag }}
+                {{ form.username }}
+
+            {{ form.email.label_tag }}
+                {{ form.email }}
+            
+            {{ form.password1.label_tag }}
+                {{ form.password1 }}
+
+            {{ form.password2.label_tag }}
+                {{ form.password2 }}
+            
+            <p><input type="submit" class="button expanded" value="Register"></input></p>
+        </form>
+    </div>
+</div>
+{% endblock %}

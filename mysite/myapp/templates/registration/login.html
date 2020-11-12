@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Login{% endblock %}
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static "css/log-in-form.css" %}"></link>
+    </head>
+</html>
+
+{% block content %}
+<div class="grid-x grid-padding-x">
+    <div class="large-4 medium-6 small-12 large-offset-4 medium-offset-3 cell">
+        <form class="log-in-form", action"/login/" method="POST">
+            {% csrf_token %}
+            {{ form.errors }}
+            <h4 class="text-center">Login</h4>
+            {{ form.username.label_tag }}
+                {{ form.username }}
+            
+            {{ form.password.label_tag }}
+                {{ form.password }}
+            
+            <p><input type="submit" class="button expanded" value="Login"></input></p>
+            <p><a href="/register/" class="secondary button expanded">Register</a></p>
+            <p class="text-center"><a href="">Forgot your password?</a></p>
+            <input type="hidden" name="next" value="{{ request.GET.next }}"/>
+        </form>
+    </div>
+</div>
+{% endblock %}

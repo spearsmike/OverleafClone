@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="{% static "css/foundation.css" %}"></link>
+        <link rel="stylesheet" href="{% static "css/app.css" %}"></link>
+        {% block css %}{% endblock %}
+    </head>
+    <body>
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <ul class="dropdown menu" data-dropdown-menu>
+                    <li class="menu-text">Document Site</li>
+                    <li class="mega-menu">
+                        <a data-toggle="mega-menu" href="#">
+                            Welcome
+                            {% if user.is_authenticated %}
+                                {{ user.username }}
+                            {% else %}
+                                Guest
+                            {% endif %}
+                        </a>
+        
+                        <div class="dropdown-pane bottom" id="mega-menu" data-dropdown data-options="closeOnClick:true; hover: true; hoverPane: true; vOffset:11">
+        
+                            <div class="row expanded">
+                                <div class="column">
+                                    <ul class="menu vertical">
+                                        <li>
+                                            {% if user.is_authenticated %}
+                                                <a href="/logout/">Logout</a>
+                                            {% else %}
+                                                <a href="/login/">Login</a>
+                                            {% endif %}
+                                        </li>
+                                        {% if user.is_authenticated %}
+                                        <li>
+                                            <a href="/documents/my">View My Documents</a>
+                                        </li>
+                                        <li>
+                                            <a href="/documents/public">View Public Documents</a>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+        
+                        </div>
+                        <li>
+                            
+                        </li>
+                    </li>
+                </ul>
+            </div>
+            <div class="top-bar-right">
+                <ul class="menu">
+                    <li><input type="search" placeholder="Search for documents"></li>
+                    <li><button type="button" class="button">Search</button></li>
+                </ul>
+            </div>
+        </div>
+
+        {% block content %}{% endblock %}
+        <script src="{% static "/js/vendor.js" %}"></script>
+        <script src="{% static "/js/foundation.js" %}"></script>
+        <script src="{% static "/js/vendor/app.min.js" %}"></script>
+        {% block scripts %}{% endblock %}
+    </body>
+</html>

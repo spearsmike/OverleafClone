@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+{% if request.user.is_authenticated %}
+
+<div class="grid-x grid-padding-x">
+<div class="large-6 medium-10 small-12 large-offset-3 medium-offset-1 cell">
+<div id="myapp">
+    <table>
+        <thead>
+            <tr>
+                <th width="200">Name</th>
+                <th width="130">Creation Date</th>
+                <th width="100">Edit Date</th>
+                <th width="130">Last Edited</th>
+                <th width="50">Editors</th>
+                <th width="40">Public</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            <template v-for="doc in documents">
+                
+                {% verbatim %}
+                <tr>
+                    <td>
+                        <input type="checkbox":id="doc.id">
+                        <label for="checkbox">{{ doc.docName }}</label>
+                    </td>
+                    <td>{{ doc.uploadDate }}</td>
+                    <td>{{ doc.editDateTime }}</td>
+                    <td>{{ doc.lastEdited }}</td>
+                    <template v-for="editor in doc.editors">
+                        <td>{{ editor["editor"] }}</td>
+                    </template>
+                    <td>{{ doc.public }}</td>
+                </tr>
+                {% endverbatim %}
+                
+            </template>
+        </tbody>
+    </table>
+</div>
+</div>
+</div>
+
+<form action="/" method="POST">
+{% csrf_token %}
+{% if form %}
+<div class="grid-x grid-padding-x">
+    <div class="large-4 medium-6 small-12 large-offset-4 medium-offset-3 cell">
+        {{ form }}
+        <input type="submit" class="button", value="Create Document"/>
+    </div>
+    </div>
+</form>
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% if view == "mydocs" %}
+<script src="{% static "js/mydocs.js" %}"></script>
+{% elif view == "publicdocs" %}
+<script src="{% static "js/publicdocs.js" %}"></script>
+{% endif %}
+{% endblock %}

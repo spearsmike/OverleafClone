@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+{% if seen %}
+{% if prev >= 0 %}
+    <a href="/{{ prev }}/">prev</a>
+{% endif %}
+<a href="/{{ next }}/">next</a>
+<ul>
+    {% for i in body %}
+    <li>{{ i }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

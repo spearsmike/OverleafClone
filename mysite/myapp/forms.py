@@ -10,7 +10,16 @@ def must_be_unique(value):
         raise forms.ValidationError("Email is already in use.")
     return value
 
-class DocumentForm(forms.Form):
+class SaveDocumentForm(forms.Form):
+    body = forms.CharField(widget=forms.Textarea, label='')
+
+    def save(self, request, doc_id):
+        document = models.DocumentModel.objects.get(id=doc_id)
+        document.body = self.cleaned_data["body"]
+        document.save()
+        return document
+
+class CreateDocumentForm(forms.Form):
     document = forms.CharField(
         label="Document Name",
         required=True,
@@ -25,7 +34,7 @@ class DocumentForm(forms.Form):
         document_instance = models.DocumentModel()
         document_instance.docName = self.cleaned_data["document"]
         document_instance.public = self.cleaned_data["public"]
-        document_instance.contents = ""
+        document_instance.body = ""
         document_instance.author = request.user
         user_instance = User.objects.filter(id=request.user.id)
         document_instance.save()

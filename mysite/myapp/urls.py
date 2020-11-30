@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.index),
-    path('<int:paths>/', views.page),
+    path('<int:page>/', views.page),
     path('login/', auth_views.LoginView.as_view()),
     path('register/', views.register),
     path('logout/', views.logout_view),
@@ -13,4 +13,5 @@ urlpatterns = [
     path('documents/public', views.public_documents),
     path('documents/public/json', views.public_documents_json),
     path('documents/all', views.all_documents),
+    path('edit_doc/<int:doc_id>', views.edit_doc),
 ]

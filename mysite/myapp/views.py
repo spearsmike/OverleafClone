@@ -15,7 +15,7 @@ def logout_view(request):
 @login_required
 def my_documents(request):
     documents = models.DocumentModel.objects.filter(author=request.user).order_by('uploadDate')
-    document_form = forms.DocumentForm()
+    document_form = forms.CreateDocumentForm()
     context = {
         "title":"My Documents",
         "documents":documents,
@@ -84,7 +84,8 @@ def create_document_list(document_objects):
 
 @login_required
 def all_documents(request):
-    document_objects = models.DocumentModel.objects.order_by('uploadDate')
+    document_objects = models.DocumentModel.objects.filter(author=request.user) | models.DocumentModel.objects.filter(public=True)
+    document_objects = document_objects.order_by('uploadDate')
     document_list = create_document_list(document_objects)
     return JsonResponse(document_list)
 
@@ -101,19 +102,45 @@ def public_documents_json(request):
     return JsonResponse(document_list)
 
 @login_required
+def edit_doc(request, doc_id):
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            save_form = forms.SaveDocumentForm(request.POST)
+            if save_form.is_valid():
+                save_form.save(request, doc_id)
+                save_form = forms.SaveDocumentForm()
+            else:
+                save_form = forms.SaveDocumentForm()
+        else:
+            save_form = forms.SaveDocumentForm()
+    else:
+        save_form = forms.SaveDocumentForm()
+
+    document = models.DocumentModel.objects.get(id=doc_id)
+    save_form.initial = {'body':document.body}
+    context = {
+        "title":document.docName,
+        "body":document.body,
+        "doc_id":document.id,
+        "form":save_form,
+    }
+
+    return render(request, "edit.html", context=context)
+
+@login_required
 def index(request):
     if request.method == "POST":
         if request.user.is_authenticated:
-            document_form = forms.DocumentForm(request.POST)
+            document_form = forms.CreateDocumentForm(request.POST)
             if document_form.is_valid():
                 document_form.save(request)
-                document_form = forms.DocumentForm()
+                document_form = forms.CreateDocumentForm()
             else:
-                document_form = forms.DocumentForm()
+                document_form = forms.CreateDocumentForm()
         else:
-            document_form = forms.DocumentForm()
+            document_form = forms.CreateDocumentForm()
     else:
-        document_form = forms.DocumentForm()
+        document_form = forms.CreateDocumentForm()
 
     documents = models.DocumentModel.objects.filter(public=True).order_by('uploadDate')
     context = {

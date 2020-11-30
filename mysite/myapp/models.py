@@ -6,7 +6,7 @@ class DocumentModel(models.Model):
     docName = models.CharField(max_length=240, default="New Document")
     uploadDate = models.DateField(auto_now_add=True)
     editDateTime = models.DateTimeField(auto_now=True)
-    contents = models.CharField(max_length=8192)
+    body = models.TextField(blank=True)
     author = models.ForeignKey(User, related_name="author_set", on_delete=models.CASCADE)
     editors = models.ManyToManyField(get_user_model(), related_name="editors_set")
     public = models.BooleanField()

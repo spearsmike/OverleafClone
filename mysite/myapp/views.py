@@ -104,7 +104,7 @@ def public_documents_json(request):
 @login_required
 def edit_doc(request, doc_id):
     if request.method == "POST":
-        if request.user.is_authenticated:
+        if request.user.is_authenticated :
             save_form = forms.SaveDocumentForm(request.POST)
             if save_form.is_valid():
                 save_form.save(request, doc_id)
@@ -116,14 +116,35 @@ def edit_doc(request, doc_id):
     else:
         save_form = forms.SaveDocumentForm()
 
-    document = models.DocumentModel.objects.get(id=doc_id)
-    save_form.initial = {'body':document.body}
-    context = {
-        "title":document.docName,
-        "body":document.body,
-        "doc_id":document.id,
-        "form":save_form,
-    }
+    #print(models.DocumentModel.objects.get(id=doc_id).editors.filter(username=request.user))
+    #print(type(models.DocumentModel.objects.get(id=doc_id).editors.all().filter(editors_set=request.user)))
+
+               #models.DocumentModel.objects.get(id=doc_id).editors.filter(username=request.user)
+    try:
+        document = models.DocumentModel.objects.get(id=doc_id)
+    except models.DocumentModel.DoesNotExist:
+        document = None
+    # print(models.DocumentModel.objects.get(id=doc_id).editors.filter(username=request.user))
+    # print(not models.DocumentModel.objects.get(id=doc_id).editors.filter(username=request.user))
+    if document:
+        if document.editors.filter(username=request.user):
+            save_form.initial = {'body':document.body}
+            context = {
+                "title":document.docName,
+                "body":document.body,
+                "doc_id":document.id,
+                "form":save_form,
+            }
+        else:
+            context = {
+            "title":"Permision Denied",
+            "body":"",
+        }
+    else:
+        context = {
+                "title":"Document Doesn't Exist",
+                "body":"",
+            }
 
     return render(request, "edit.html", context=context)
 

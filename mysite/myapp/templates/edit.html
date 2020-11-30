@@ -11,6 +11,7 @@
 </div>
 </div>
 
+{% if doc_id %}
 <form action="/edit_doc/{{ doc_id }}" method="POST">
     {% csrf_token %}
     <div class="grid-x grid-padding-x">
@@ -20,6 +21,7 @@
     </div>
     </div>
 </form>
+{% endif %}
 
 {% endblock %}
 {% endif %}

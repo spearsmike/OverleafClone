@@ -25,12 +25,9 @@
                 {% verbatim %}
                 <tr>
                     <td>
-                        <input type="checkbox":id="doc.id">
-                        <label for="checkbox">
-                            <a :href="'/edit_doc/' + doc.id">
-                            {{ doc.docName }}
-                            </a>
-                        </label>
+                        {{ doc.docName }}
+                        <p><a :href="'/view_doc/' + doc.id">view</a>
+                        <a :href="'/edit_doc/' + doc.id">edit</a></p>
                     </td>
                     <td>{{ doc.uploadDate }}</td>
                     <td>{{ doc.editDateTime }}</td>
@@ -66,7 +63,9 @@
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-{% if view == "mydocs" %}
+{% if view == "alldocs" %}
+<script src="{% static "js/alldocs.js" %}"></script>
+{% elif view == "mydocs" %}
 <script src="{% static "js/mydocs.js" %}"></script>
 {% elif view == "publicdocs" %}
 <script src="{% static "js/publicdocs.js" %}"></script>

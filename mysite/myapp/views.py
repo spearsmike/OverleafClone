@@ -15,11 +15,9 @@ def logout_view(request):
 
 @login_required
 def my_documents(request):
-    documents = models.DocumentModel.objects.filter(author=request.user).order_by('uploadDate')
     document_form = forms.CreateDocumentForm()
     context = {
         "title":"My Documents",
-        "documents":documents,
         "view":"mydocs",
         "form":document_form,
     }
@@ -28,11 +26,18 @@ def my_documents(request):
 
 @login_required
 def public_documents(request):
-    documents = models.DocumentModel.objects.filter(public=True).order_by('uploadDate')
     context = {
         "title":"Public Documents",
-        "documents":documents,
         "view":"publicdocs",
+    }
+
+    return render(request, "document_list.html", context=context)
+
+@login_required
+def all_documents(request):
+    context = {
+        "title":"My & Public Documents",
+        "view":"alldocs",
     }
 
     return render(request, "document_list.html", context=context)
@@ -84,7 +89,7 @@ def create_document_list(document_objects):
     return document_list
 
 @login_required
-def all_documents(request):
+def all_documents_json(request):
     document_objects = models.DocumentModel.objects.filter(
         author=request.user) | models.DocumentModel.objects.filter(public=True).order_by('uploadDate')
     document_list = create_document_list(document_objects)
@@ -123,7 +128,7 @@ def edit_doc(request, doc_id):
         document = None
 
     if document:
-        if document.editors.filter(username=request.user):
+        if document.editors.filter(username=request.user) or document.public==True:
             save_form.initial = {'body':document.body}
             context = {
                 "title":document.docName,
@@ -143,6 +148,32 @@ def edit_doc(request, doc_id):
             }
 
     return render(request, "edit.html", context=context)
+
+@login_required
+def view_doc(request, doc_id):
+    try:
+        document = models.DocumentModel.objects.get(id=doc_id)
+    except models.DocumentModel.DoesNotExist:
+        document = None
+
+    if document:
+        if document.editors.filter(username=request.user) or document.public==True:
+            context = {
+                "title":document.docName,
+                "body":document.body,
+            }
+        else:
+            context = {
+            "title":"Permision Denied",
+            "body":"",
+        }
+    else:
+        context = {
+                "title":"Document Doesn't Exist",
+                "body":"",
+            }
+
+    return render(request, "view.html", context=context)
 
 @login_required
 def index(request):

@@ -17,7 +17,7 @@
             //     console.log(suggest_list);
             // }.bind(this));
             axios
-              .get('/documents/all')
+              .get('/documents/all/json')
               // .then(response => console.log(response.data))
               .then(response => (this.documents = response.data.documents))
             console.log(this.documents)

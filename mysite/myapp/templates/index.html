@@ -25,8 +25,9 @@
                 {% verbatim %}
                 <tr>
                     <td>
-                        <input type="checkbox":id="doc.id">
-                        <label for="checkbox">{{ doc.docName }}</label>
+                        <a :href="'/edit_doc/' + doc.id">
+                        {{ doc.docName }}
+                        </a>
                     </td>
                     <td>{{ doc.uploadDate }}</td>
                     <td>{{ doc.editDateTime }}</td>

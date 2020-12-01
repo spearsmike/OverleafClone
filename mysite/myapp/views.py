@@ -1,9 +1,10 @@
 from datetime import datetime, timezone
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponsePermanentRedirect
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.urls import reverse
 
 from . import models
 from . import forms
@@ -84,8 +85,8 @@ def create_document_list(document_objects):
 
 @login_required
 def all_documents(request):
-    document_objects = models.DocumentModel.objects.filter(author=request.user) | models.DocumentModel.objects.filter(public=True)
-    document_objects = document_objects.order_by('uploadDate')
+    document_objects = models.DocumentModel.objects.filter(
+        author=request.user) | models.DocumentModel.objects.filter(public=True).order_by('uploadDate')
     document_list = create_document_list(document_objects)
     return JsonResponse(document_list)
 
@@ -116,16 +117,11 @@ def edit_doc(request, doc_id):
     else:
         save_form = forms.SaveDocumentForm()
 
-    #print(models.DocumentModel.objects.get(id=doc_id).editors.filter(username=request.user))
-    #print(type(models.DocumentModel.objects.get(id=doc_id).editors.all().filter(editors_set=request.user)))
-
-               #models.DocumentModel.objects.get(id=doc_id).editors.filter(username=request.user)
     try:
         document = models.DocumentModel.objects.get(id=doc_id)
     except models.DocumentModel.DoesNotExist:
         document = None
-    # print(models.DocumentModel.objects.get(id=doc_id).editors.filter(username=request.user))
-    # print(not models.DocumentModel.objects.get(id=doc_id).editors.filter(username=request.user))
+
     if document:
         if document.editors.filter(username=request.user):
             save_form.initial = {'body':document.body}

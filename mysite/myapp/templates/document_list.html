@@ -26,7 +26,11 @@
                 <tr>
                     <td>
                         <input type="checkbox":id="doc.id">
-                        <label for="checkbox">{{ doc.docName }}{{doc.id}}</label>
+                        <label for="checkbox">
+                            <a :href="'/edit_doc/' + doc.id">
+                            {{ doc.docName }}
+                            </a>
+                        </label>
                     </td>
                     <td>{{ doc.uploadDate }}</td>
                     <td>{{ doc.editDateTime }}</td>

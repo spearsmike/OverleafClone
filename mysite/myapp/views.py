@@ -225,3 +225,10 @@ def register(request):
         "form":form_instance,
     }
     return render(request, "registration/register.html", context=context)
+
+def chat(request):
+    return render(request, "chat.html")
+
+def chat_room(request, id):
+    context = { 'room_name': id }
+    return render(request, "room.html", context=context)

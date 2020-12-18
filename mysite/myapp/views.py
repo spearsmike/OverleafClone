@@ -138,14 +138,14 @@ def edit_doc(request, doc_id):
             }
         else:
             context = {
-            "title":"Permision Denied",
-            "body":"",
-        }
-    else:
-        context = {
-                "title":"Document Doesn't Exist",
+                "title":"Permision Denied",
                 "body":"",
             }
+    else:
+        context = {
+            "title":"Document Doesn't Exist",
+            "body":"",
+        }
 
     return render(request, "edit.html", context=context)
 
@@ -164,14 +164,14 @@ def view_doc(request, doc_id):
             }
         else:
             context = {
-            "title":"Permision Denied",
-            "body":"",
-        }
-    else:
-        context = {
-                "title":"Document Doesn't Exist",
+                "title":"Permision Denied",
                 "body":"",
             }
+    else:
+        context = {
+            "title":"Document Doesn't Exist",
+            "body":"",
+        }
 
     return render(request, "view.html", context=context)
 
@@ -229,6 +229,30 @@ def register(request):
 def chat(request):
     return render(request, "chat.html")
 
-def chat_room(request, id):
-    context = { 'room_name': id }
+def chat_room(request, doc_id):
+    try:
+        document = models.DocumentModel.objects.get(id=doc_id)
+    except models.DocumentModel.DoesNotExist:
+        document = None
+
+    if document:
+        if document.editors.filter(username=request.user) or document.public==True:
+            context = {
+                "title":document.docName,
+                "body":document.body,
+                "room_name":doc_id,
+            }
+        else:
+            context = {
+                "title":"Permision Denied",
+                "body":"",
+                "room_name":doc_id,
+            }
+    else:
+        context = {
+            "title":"Document Doesn't Exist",
+            "body":"",
+            "room_name":doc_id,
+        }
+
     return render(request, "room.html", context=context)

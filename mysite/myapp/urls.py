@@ -17,5 +17,5 @@ urlpatterns = [
     path('edit_doc/<int:doc_id>', views.edit_doc),
     path('view_doc/<int:doc_id>', views.view_doc),
     path('chat/', views.chat),
-    path('chat/<int:id>', views.chat_room),
+    path('chat/<int:doc_id>', views.chat_room),
 ]

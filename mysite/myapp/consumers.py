@@ -1,12 +1,15 @@
+#adapted from https://channels.readthedocs.io/en/stable/tutorial/index.html
 # chat/consumers.py
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from . import models
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
+        self.user = self.scope['user']
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
@@ -14,8 +17,19 @@ class ChatConsumer(WebsocketConsumer):
             self.channel_name
         )
 
-        self.accept()
+        try:
+            document = models.DocumentModel.objects.get(id=self.room_name)
+        except models.DocumentModel.DoesNotExist:
+            document = None
 
+        if document:
+            if document.editors.filter(username=self.user) or document.public==True:
+                self.accept()
+                self.send(text_data=json.dumps({
+                    'message': document.body
+                }))
+
+        
     def disconnect(self, close_code):
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
@@ -27,6 +41,11 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
+        
+        document = models.DocumentModel.objects.get(id=self.room_name)
+        if document.editors.filter(username=self.user) or document.public==True:
+            document.body = message
+            document.save()
 
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(

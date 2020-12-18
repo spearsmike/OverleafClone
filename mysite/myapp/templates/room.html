@@ -1,13 +1,14 @@
+<!-- adapted from https://channels.readthedocs.io/en/stable/tutorial/index.html -->
 <!-- chat/templates/chat/room.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Chat Room</title>
+    <title>{{ title }}</title>
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
+    <textarea id="chat-log" cols="100" rows="20">{{ body }}</textarea><br>
+    <!-- <input id="chat-message-input" type="text" size="100"><br> -->
     <input id="chat-message-submit" type="button" value="Send">
     {{ room_name|json_script:"room-name" }}
     <script>
@@ -23,27 +24,27 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+            document.querySelector('#chat-log').value = (data.message);
+            //document.querySelector('#chat-message-input').value = (data.message);
         };
 
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
 
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
+        document.querySelector('#chat-log').focus();
+        document.querySelector('#chat-log').onkeyup = function(e) {
+            if (e.keyCode >= 32 | e.keyCode === 13 | e.keyCode === 10) {  // normal keyboard symbols, backspace or return
                 document.querySelector('#chat-message-submit').click();
             }
         };
 
         document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
+            const messageInputDom = document.querySelector('#chat-log');
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
                 'message': message
             }));
-            messageInputDom.value = '';
         };
     </script>
 </body>

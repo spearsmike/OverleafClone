@@ -6,10 +6,19 @@ services:
     build: .
     volumes:
        - .:/code
+    links:
+       - redis:redis
+    ports:
+       - 8000:8000
     expose:
        - 8000
     user: "1001:1002"
     command: bash -c "python /code/mysite/manage.py migrate --no-input && python /code/mysite/manage.py runserver 0.0.0.0:8000"
+
+  redis:
+   image: "redis:5"
+   expose: 
+       - 6379
 
   nginx:
     restart: always

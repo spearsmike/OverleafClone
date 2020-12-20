@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse, HttpResponsePermanentRedirect
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.urls import reverse
@@ -215,8 +215,9 @@ def register(request):
     if request.method == "POST":
         form_instance = forms.RegistrationForm(request.POST)
         if form_instance.is_valid():
-            user = form_instance.save() # could authenticate user right here
-            return redirect("/login/")
+            user = form_instance.save()
+            login(request, user)
+            return redirect("/")
     else:
         form_instance = forms.RegistrationForm()
     

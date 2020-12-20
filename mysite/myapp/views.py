@@ -190,7 +190,7 @@ def dashboard(request):
     else:
         document_form = forms.CreateDocumentForm()
 
-    document = (models.DocumentModel.objects.filter(author=request.user) | models.DocumentModel.objects.filter(public=True).order_by('uploadDate')).first()
+    document = (models.DocumentModel.objects.filter(author=request.user) | models.DocumentModel.objects.filter(public=True)).order_by('editDateTime').last()
     context = {
         "title":"Landing",
         "document":document,

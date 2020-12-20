@@ -27,7 +27,7 @@ SECRET_KEY = utils.get_random_secret_key()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["35.209.128.134"]
+ALLOWED_HOSTS = ["35.208.175.252"]
 
 LOGIN_REDIRECT_URL="/"
 LOGIN_URL="/login/"

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+{% if request.user.is_authenticated %}
+
+<div class="grid-x grid-padding-x">
+<div class="large-6 medium-10 small-12 large-offset-3 medium-offset-1 cell">
+    <h4>Your Last Document</h4>
+    <h5>{{ document.docName }}</h5>
+    <p>
+        <a href="/view_doc/{{ document.id }}">view</a>
+        <a href="/edit_doc/{{ document.id }}">edit</a>
+        <a href="/chat/{{ document.id }}">[edit live]</a>
+    </p>
+</div>
+</div>
+
+<form action="/" method="POST">
+{% csrf_token %}
+{% if form %}
+<div class="grid-x grid-padding-x">
+    <div class="large-4 medium-6 small-12 large-offset-4 medium-offset-3 cell">
+        {{ form }}
+        <input type="submit" class="button", value="Create Document"/>
+    </div>
+    </div>
+</form>
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+{% endblock %}

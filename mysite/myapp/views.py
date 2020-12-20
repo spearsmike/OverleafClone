@@ -176,7 +176,7 @@ def view_doc(request, doc_id):
     return render(request, "view.html", context=context)
 
 @login_required
-def index(request):
+def dashboard(request):
     if request.method == "POST":
         if request.user.is_authenticated:
             document_form = forms.CreateDocumentForm(request.POST)
@@ -190,15 +190,14 @@ def index(request):
     else:
         document_form = forms.CreateDocumentForm()
 
-    documents = models.DocumentModel.objects.filter(public=True).order_by('uploadDate')
+    document = (models.DocumentModel.objects.filter(author=request.user) | models.DocumentModel.objects.filter(public=True).order_by('uploadDate')).first()
     context = {
-        "title":"All Documents",
-        "documents":documents,
-        "view":"alldocs",
+        "title":"Landing",
+        "document":document,
         "form":document_form,
     }
 
-    return render(request, "index.html", context=context)
+    return render(request, "dashboard.html", context=context)
 
 def page(request, page=0):
     title = "Title"

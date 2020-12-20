@@ -39,13 +39,16 @@
                                         </li>
                                         {% if user.is_authenticated %}
                                         <li>
-                                            <a href="/documents/my">View My Documents</a>
+                                            <a href="/">Dashboard</a>
                                         </li>
                                         <li>
-                                            <a href="/documents/public">View Public Documents</a>
+                                            <a href="/documents/my">My Documents</a>
                                         </li>
                                         <li>
-                                            <a href="/documents/all">View Public & My Documents</a>
+                                            <a href="/documents/public">Public Documents</a>
+                                        </li>
+                                        <li>
+                                            <a href="/documents/all">Public & My Documents</a>
                                         </li>
                                         {% endif %}
                                     </ul>

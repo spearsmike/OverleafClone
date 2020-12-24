@@ -226,10 +226,7 @@ def register(request):
     }
     return render(request, "registration/register.html", context=context)
 
-def chat(request):
-    return render(request, "chat.html")
-
-def chat_room(request, doc_id):
+def edit_doc_live(request, doc_id):
     try:
         document = models.DocumentModel.objects.get(id=doc_id)
     except models.DocumentModel.DoesNotExist:
@@ -240,19 +237,19 @@ def chat_room(request, doc_id):
             context = {
                 "title":document.docName,
                 "body":document.body,
-                "room_name":doc_id,
+                "document_id":doc_id,
             }
         else:
             context = {
                 "title":"Permision Denied",
                 "body":"",
-                "room_name":doc_id,
+                "document_id":doc_id,
             }
     else:
         context = {
             "title":"Document Doesn't Exist",
             "body":"",
-            "room_name":doc_id,
+            "document_id":doc_id,
         }
 
     return render(request, "room.html", context=context)
